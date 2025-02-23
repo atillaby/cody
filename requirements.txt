@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+python-dotenv>=0.19.0
+pytest
+sqlalchemy
+pydantic
+pydantic-settings>=2.0.0
+ccxt
+pandas
+numpy
+python-telegram-bot==20.7
+websockets
+requests
+python-multipart
+redis
+aiohttp>=3.8.0

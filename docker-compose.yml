@@ -1,0 +1,88 @@
+version:
+
+services:
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: [ "redis-server", "--requirepass", "admin123" ]
+    networks:
+      - app_network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "admin123", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  mongodb:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./docker/mongodb:/docker-entrypoint-initdb.d
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin123
+      - MONGO_INITDB_DATABASE=trading_bot
+    networks:
+      - app_network
+
+  fastapi:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGODB_URI=mongodb://admin:admin123@mongodb:27017/trading_bot?authSource=admin
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - app_network
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+
+  telegram:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.telegram
+    env_file: .env
+    environment:
+      - PYTHONPATH=/app
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - app_network
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+    command: [ "python", "api/services/telegram_bot.py" ]
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    ports:
+      - "5672:5672"
+      - "15672:15672" # Management UI
+    volumes:
+      - ./rabbitmq:/etc/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin123
+    networks:
+      - app_network
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  mongodb_data:
+
+
+networks:
+  app_network:
+    driver: bridge

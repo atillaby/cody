@@ -1,0 +1,6 @@
+black==23.12.1           # Code formatting
+flake8==7.0.0           # Linting
+isort==5.13.2           # Import sorting
+mypy==1.8.0             # Type checking
+pytest==7.4.4           # Testing
+pytest-asyncio==0.23.3  # Async testing support

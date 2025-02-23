@@ -97,10 +97,10 @@ def return_statement_value(value: str, flag: bool = False):
 
 # ------------------------------------
 
-from math import cos
+from math import comb, cos
+
 #    |
 
 # ------------------------------------
 
-from math import comb
 #                |

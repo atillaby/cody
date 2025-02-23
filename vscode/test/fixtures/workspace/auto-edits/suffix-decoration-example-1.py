@@ -51,14 +51,14 @@ class ContactForm(Base):
 >>>>
 """
 
-from datetime import datetime
 import re
-from sqlalchemy import Column, String, DateTime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import validates
 import uuid
+from datetime import datetime
 
 from models.metadata import MetaDataSingleton
+from sqlalchemy import Column, DateTime, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import validates
 
 Base = declarative_base(metadata=MetaDataSingleton())
 

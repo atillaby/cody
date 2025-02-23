@@ -1,0 +1,28 @@
+name: Update Rules Documentation
+
+on:
+  push:
+    paths:
+      - 'src/**'
+      - 'docs/**'
+      - '.github/workflows/**'
+
+jobs:
+  update-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update Rules Version
+        run: |
+          DATE=$(date '+%Y-%m-%d_%H-%M-%S')
+          cp docs/rules.md docs/versions/rules_$DATE.md
+          echo "Version: $DATE" >> docs/rules.md
+
+      - name: Commit Changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/
+          git commit -m "Auto-update rules documentation [skip ci]"
+          git push

@@ -1,0 +1,22 @@
+name: Automatic Cleanup
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Her gün gece yarısı
+  workflow_dispatch:      # Manuel tetikleme için
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run Cleanup Script
+        run: |
+          python cleanup/scripts/cleanup.py
+
+      - name: Log Cleanup Results
+        run: |
+          DATE=$(date '+%Y-%m-%d')
+          echo "Cleanup completed on $DATE" >> cleanup/logs/cleanup_history.log

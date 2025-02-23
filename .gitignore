@@ -49,3 +49,7 @@ test-results
 agent/bindings/kotlin/lib/bin/
 .aider.*
 .aiderignore
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
